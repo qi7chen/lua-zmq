@@ -724,6 +724,9 @@ static void create_metatable(lua_State* L)
         lua_pushvalue(L, -1);
         lua_setfield(L, -2, "__index");
         luaL_setfuncs(L, methods, 0);
+        lua_pushliteral (L, "__metatable");
+        lua_pushliteral (L, "cannot access this metatable");
+        lua_settable (L, -3);
         lua_pop(L, 1);  /* pop new metatable */
     }
     else
