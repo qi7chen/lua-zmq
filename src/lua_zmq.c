@@ -2,11 +2,12 @@
 // Distributed under the terms and conditions of the Apache License.
 // See accompanying files LICENSE.
 
-#include <memory>
-#include <thread>
+#include <stdio.h>
+#include <assert.h>
+#include <zmq.h>
 #include <zmq_utils.h>
-#include <zmq.hpp>
-#include <lua.hpp>
+#include <lua.h>
+#include <lauxlib.h>
 
 #ifdef _MSC_VER
 # define snprintf       _snprintf
@@ -16,8 +17,7 @@
 #endif
 
 
-const auto IO_THREADS = std::thread::hardware_concurrency();
-static std::unique_ptr<zmq::context_t> global_context(new zmq::context_t(IO_THREADS));
+static void* global_context = NULL;
 
 
 #define ZSOCK_META_HANDLE  "socket*"
@@ -32,7 +32,7 @@ inline int lzmq_throw_error(lua_State* L)
 static int lzmq_create_socket(lua_State* L)
 {
     int type = luaL_checkint(L, 1);
-    void* socket = zmq_socket((void*)*global_context, type);
+    void* socket = zmq_socket(global_context, type);
     if (socket == NULL)
     {
         return lzmq_throw_error(L);
@@ -522,6 +522,48 @@ static int zsocket_set_ipv4only(lua_State* L)
     return 0;
 }
 
+static int lzmq_init(lua_State* L)
+{
+    if (global_context == NULL)
+    {
+        global_context = zmq_ctx_new();
+    }
+    int io_threads = luaL_optint(L, 1, ZMQ_IO_THREADS_DFLT);
+    int max_sockets = luaL_optint(L, 1, ZMQ_MAX_SOCKETS_DFLT);
+    int rc = zmq_ctx_set(global_context, ZMQ_IO_THREADS, io_threads);
+    if (rc != 0)
+    {
+        return lzmq_throw_error(L);
+    }
+    rc = zmq_ctx_set(global_context, ZMQ_MAX_SOCKETS, max_sockets);
+    if (rc != 0)
+    {
+        return lzmq_throw_error(L);
+    }
+    return 0;
+}
+
+static int lzmq_shutdown(lua_State* L)
+{
+    int rc = zmq_ctx_shutdown(global_context);
+    if (rc != 0)
+    {
+        return lzmq_throw_error(L);
+    }
+    return 0;
+}
+
+static int lzmq_terminate(lua_State* L)
+{
+    int rc = zmq_ctx_term(global_context);
+    if (rc != 0)
+    {
+        return lzmq_throw_error(L);
+    }
+    global_context = NULL;
+    return 0;
+}
+
 static int lzmq_version(lua_State* L)
 {
     const char* option = lua_tostring(L, 1);
@@ -690,11 +732,13 @@ static void create_metatable(lua_State* L)
     }
 }
 
-extern "C" LZMQ_EXPORT
-int luaopen_zmq(lua_State* L)
+LZMQ_EXPORT int luaopen_luazmq(lua_State* L)
 {
     static const luaL_Reg lib[] =
     {
+        { "init", lzmq_init },
+        { "shutdown", lzmq_shutdown },
+        { "terminate", lzmq_terminate },
         { "version", lzmq_version },
         { "z85_encode", lzmq_z85_encode },
         { "z85_decode", lzmq_z85_decode },
@@ -704,9 +748,9 @@ int luaopen_zmq(lua_State* L)
         { NULL, NULL },
     };
 
+    luaL_checkversion(L);
     luaL_newlib(L, lib);
     push_socket_constant(L);
     create_metatable(L);
-    
     return 1;
 }
