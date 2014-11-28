@@ -1,3 +1,7 @@
+--
+--  echo server with curve
+--
+
 local zmq = require 'luazmq'
 
 zmq.init()
