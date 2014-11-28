@@ -28,6 +28,19 @@ solution 'luazmq'
         }
         links 'ws2_32'
 
+    configuration 'gmake'
+        buildoptions '-rdynamic'
+        defines
+        {
+            '__STDC_LIMIT_MACROS',
+        }
+        links
+        {
+            'm',
+            'rt',
+            'dl',
+        }
+        
     project 'lua'
         language 'C'
         kind 'ConsoleApp'
@@ -86,6 +99,10 @@ solution 'luazmq'
             'deps/lua/src/lua.c',
             'deps/lua/src/luac.c',
         }
+        if os.get() == 'linux' then
+        defines 'LUA_USE_LINUX'
+        links 'readline'
+        end
 
     project 'sodium'
         language 'C'
