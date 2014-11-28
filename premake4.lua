@@ -3,7 +3,7 @@
 --
 
 
-solution 'lua-zmq'
+solution 'luazmq'
     configurations {'Debug', 'Release'}
     --flags {'ExtraWarnings'}
     targetdir 'bin'
@@ -26,6 +26,7 @@ solution 'lua-zmq'
             '_SCL_SECURE_NO_WARNINGS',
             'NOMINMAX',
         }
+        links 'ws2_32'
 
     project 'lua'
         language 'C'
@@ -40,14 +41,41 @@ solution 'lua-zmq'
         {
             'deps/lua/src',
         }
-        links 'lua5.2'
+        links 'lua52'
 
-    project 'lua5.2'
+    project 'luazmq'
+        language 'C'
+        kind 'SharedLib'
+        location 'build'
+        uuid '86C52891-A665-47BF-9107-8EA58606C41A'
+        if os.get() == 'windows' then
+        defines 'inline=__inline'
+        end
+        files
+        {
+            'src/*.c',
+        }
+        includedirs
+        {
+            'deps/lua/src',
+            'deps/libzmq/include',
+        }
+        libdirs 'bin'
+        links
+        {
+            'lua52',
+            'zmq',
+            'sodium',
+        }
+
+    project 'lua52'
         language 'C'
         kind 'SharedLib'
         location 'build'
         uuid 'C9A112FB-08C0-4503-9AFD-8EBAB5B3C204'
+        if os.get() == 'windows' then
         defines 'LUA_BUILD_AS_DLL'
+        end
         files
         {
             'deps/lua/src/*.h',
@@ -59,37 +87,18 @@ solution 'lua-zmq'
             'deps/lua/src/luac.c',
         }
 
-    project 'luazmq'
-        language 'C++'
-        kind 'SharedLib'
-        location 'build'
-        uuid '86C52891-A665-47BF-9107-8EA58606C41A'
-        files
-        {
-            'src/*.cpp',
-        }
-        includedirs
-        {
-            'deps/lua/src',
-            'deps/libzmq/include',
-        }
-        links
-        {
-            'lua5.2',
-            'zmq',
-            'sodium',
-        }
-
     project 'sodium'
         language 'C'
         kind 'SharedLib'
         location 'build'
         uuid 'CB19F7EE-55D6-4C40-849D-64E2D3849041'
+        if os.get() == 'windows' then
         defines
         {
             'SODIUM_DLL_EXPORT',
             'inline=__inline',
         }
+        end
         files
         {
             'deps/libsodium/src/**.h',
@@ -106,12 +115,14 @@ solution 'lua-zmq'
         kind 'SharedLib'
         location 'build'
         uuid 'A75AF625-DDF0-4E60-97D8-A2FDC6229AF7'
+        if os.get() == 'windows' then
         defines
         {
             'DLL_EXPORT',
             'FD_SETSIZE=1024',
-            'HAVE_LIBSODIUM',
         }
+        end
+        defines 'HAVE_LIBSODIUM'
         files
         {
             'deps/libzmq/include/*.h',
@@ -124,4 +135,5 @@ solution 'lua-zmq'
             'deps/libzmq/include',
             'deps/libzmq/builds/msvc',
         }
-        links {'ws2_32', 'sodium'}
+        links 'sodium'
+        
