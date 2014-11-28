@@ -1,3 +1,7 @@
+// Copyright (C) 2014 ichenq@gmail.com. All rights reserved.
+// Distributed under the terms and conditions of the Apache License.
+// See accompanying files LICENSE.
+
 #include <memory>
 #include <thread>
 #include <zmq_utils.h>
@@ -5,7 +9,10 @@
 #include <lua.hpp>
 
 #ifdef _MSC_VER
-#define snprintf    _snprintf
+# define snprintf       _snprintf
+# define LZMQ_EXPORT    __declspec(dllexport)
+#else
+# define LZMQ_EXPORT
 #endif
 
 
@@ -13,10 +20,8 @@ const auto IO_THREADS = std::thread::hardware_concurrency();
 static std::unique_ptr<zmq::context_t> global_context(new zmq::context_t(IO_THREADS));
 
 
-#define ZSOCK_META_HANDLE  "socket*.gc"
+#define ZSOCK_META_HANDLE  "socket*"
 #define check_socket(L)     (*(void**)luaL_checkudata(L, 1, ZSOCK_META_HANDLE))
-
-
 
 inline int lzmq_throw_error(lua_State* L)
 {
@@ -539,7 +544,6 @@ static int lzmq_version(lua_State* L)
     }
 }
 
-
 static int lzmq_z85_encode(lua_State *L)
 {
     size_t len;
@@ -603,9 +607,16 @@ static int lzmq_curve_keypair(lua_State* L)
     return 2;
 }
 
-#define push_literal(L, name, value)  \
-    lua_pushstring(L, name); \
-    lua_pushnumber(L, value);  \
+static int lzmq_sleep(lua_State* L)
+{
+    int sec = luaL_checkint(L, 1);
+    zmq_sleep(sec);
+    return 0;
+}
+
+#define push_literal(L, name, value)\
+    lua_pushstring(L, name);        \
+    lua_pushnumber(L, value);       \
     lua_rawset(L, -3);
 
 static void push_socket_constant(lua_State* L)
@@ -666,14 +677,20 @@ static void create_metatable(lua_State* L)
         { "set_conflate", zsocket_set_conflate },
         { NULL, NULL },
     };
-    luaL_newmetatable(L, ZSOCK_META_HANDLE);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, methods, 0);
-    lua_pop(L, 1);  /* pop new metatable */
+    if (luaL_newmetatable(L, ZSOCK_META_HANDLE))
+    {
+        lua_pushvalue(L, -1);
+        lua_setfield(L, -2, "__index");
+        luaL_setfuncs(L, methods, 0);
+        lua_pop(L, 1);  /* pop new metatable */
+    }
+    else
+    {
+        luaL_error(L, "`%s` already registered.", ZSOCK_META_HANDLE);
+    }
 }
 
-extern "C"
+extern "C" LZMQ_EXPORT
 int luaopen_zmq(lua_State* L)
 {
     static const luaL_Reg lib[] =
@@ -683,10 +700,13 @@ int luaopen_zmq(lua_State* L)
         { "z85_decode", lzmq_z85_decode },
         { "curve_keypair", lzmq_curve_keypair },
         { "socket", lzmq_create_socket },
+        { "sleep", lzmq_sleep },
         { NULL, NULL },
     };
+
     luaL_newlib(L, lib);
-    create_metatable(L);
     push_socket_constant(L);
+    create_metatable(L);
+    
     return 1;
 }
