@@ -8,8 +8,9 @@ make
 sudo make install
 make clean
 
-# zmq from ubuntu repo is version 2.2, which is too old for us
-cd ../deps/libzmq
+# ubuntu official zmq is version 2.2(too old for us)
+# following compile version 4.0
+cd ../libzmq
 chmod +x ./configure
 ./configure
 make
