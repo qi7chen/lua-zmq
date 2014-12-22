@@ -61,7 +61,7 @@ solution 'luazmq'
         libdirs 'bin'
         links
         {
-            'lua52',
+            'lua5.2',
             'zmq',
             'sodium',
         }
@@ -82,9 +82,9 @@ solution 'luazmq'
         {
             'deps/lua/src',
         }
-        links 'lua52'  
+        links 'lua5.2'  
 
-    project 'lua52'
+    project 'lua5.2'
         language 'C'
         kind 'SharedLib'
         location 'build'
