@@ -11,17 +11,24 @@
 
 #ifdef _MSC_VER
 # define snprintf       _snprintf
-# define LZMQ_EXPORT    __declspec(dllexport)
+# define LUAZMQ_EXPORT  __declspec(dllexport)
 #else
-# define LZMQ_EXPORT
+# define LUAZMQ_EXPORT  extern
 #endif
 
+#if defined(__GNUC__) && __GNUC__ >= 4
+# define LIKELY(x)   (__builtin_expect((x), 1))
+# define UNLIKELY(x) (__builtin_expect((x), 0))
+#else
+# define LIKELY(x)   (x)
+# define UNLIKELY(x) (x)
+#endif
 
 static void* global_context = NULL;
 
 
-#define ZSOCK_META_HANDLE  "socket*"
-#define check_socket(L)     (*(void**)luaL_checkudata(L, 1, ZSOCK_META_HANDLE))
+#define LUA_ZMQ_SOCKET  "socket*"
+#define check_socket(L)     (*(void**)luaL_checkudata(L, 1, LUA_ZMQ_SOCKET))
 
 inline int lzmq_throw_error(lua_State* L)
 {
@@ -39,14 +46,14 @@ static int lzmq_create_socket(lua_State* L)
     }
     void* udata = lua_newuserdata(L, sizeof(socket));
     memcpy(udata, &socket, sizeof(socket));
-    luaL_getmetatable(L, ZSOCK_META_HANDLE);
+    luaL_getmetatable(L, LUA_ZMQ_SOCKET);
     lua_setmetatable(L, -2);
     return 1;
 }
 
 static int zsocket_close(lua_State* L)
 {
-    void** udata = (void**)luaL_checkudata(L, 1, ZSOCK_META_HANDLE);
+    void** udata = (void**)luaL_checkudata(L, 1, LUA_ZMQ_SOCKET);
     void* socket = *udata;
     if (socket != NULL)
     {
@@ -140,7 +147,7 @@ static int zsocket_send(lua_State* L)
         }
     }
     int rc = zmq_send(socket, data, len, flag);
-    if (rc == -1)
+    if (UNLIKELY(rc < 0))
     {
         return lzmq_throw_error(L);
     }
@@ -161,7 +168,7 @@ static int zsocket_recv(lua_State* L)
     zmq_msg_t msg;
     zmq_msg_init(&msg);
     int rc = zmq_recvmsg(socket, &msg, flag);
-    if (rc == -1)
+    if (UNLIKELY(rc < 0))
     {
         zmq_msg_close(&msg);
         return lzmq_throw_error(L);
@@ -719,7 +726,7 @@ static void create_metatable(lua_State* L)
         { "set_conflate", zsocket_set_conflate },
         { NULL, NULL },
     };
-    if (luaL_newmetatable(L, ZSOCK_META_HANDLE))
+    if (luaL_newmetatable(L, LUA_ZMQ_SOCKET))
     {
         lua_pushvalue(L, -1);
         lua_setfield(L, -2, "__index");
@@ -731,11 +738,12 @@ static void create_metatable(lua_State* L)
     }
     else
     {
-        luaL_error(L, "`%s` already registered.", ZSOCK_META_HANDLE);
+        luaL_error(L, "`%s` already registered.", LUA_ZMQ_SOCKET);
     }
 }
 
-LZMQ_EXPORT int luaopen_luazmq(lua_State* L)
+LUAZMQ_EXPORT 
+int luaopen_luazmq(lua_State* L)
 {
     static const luaL_Reg lib[] =
     {
