@@ -40,21 +40,6 @@ solution 'luazmq'
             'rt',
             'dl',
         }
-        
-    project 'lua'
-        language 'C'
-        kind 'ConsoleApp'
-        location 'build'
-        uuid '9C08AC41-18D8-4FB9-80F2-01F603917025'        
-        files
-        {
-            'deps/lua/src/lua.c',
-        }
-        includedirs
-        {
-            'deps/lua/src',
-        }
-        links 'lua52'
 
     project 'luazmq'
         language 'C'
@@ -80,6 +65,24 @@ solution 'luazmq'
             'zmq',
             'sodium',
         }
+
+    -- sudo apt-get install lua5.2 liblua5.2-dev
+    if os.get() == 'linux' then return end
+    
+    project 'lua'
+        language 'C'
+        kind 'ConsoleApp'
+        location 'build'
+        uuid '9C08AC41-18D8-4FB9-80F2-01F603917025'        
+        files
+        {
+            'deps/lua/src/lua.c',
+        }
+        includedirs
+        {
+            'deps/lua/src',
+        }
+        links 'lua52'  
 
     project 'lua52'
         language 'C'
