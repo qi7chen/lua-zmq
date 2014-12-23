@@ -1,13 +1,15 @@
 # lua-zmq
 
-lua-zmq is simple(not complete) lua 5.2 binding of zeromq 4.
+lua-zmq is a simple(but not complete) Lua 5.2 binding of ZeroMQ 4.
 
 ## Installation
 
+First obtain [premake4](http://industriousone.com/premake/download).
+
 ### Build on Windows 7 x64
 
-1. Obtain [premake4](http://industriousone.com/premake/download).
-2. Type `premake4 vs2013` on CMD window to generate MSVC solution files.
+1. Type `premake4 vs2013` on command window to generate MSVC solution files.
+2. Use Visual Studio 2013(either Ultimate or Community version) to compile executable binary.
 
 ### Build on Ubuntu 14.04 64-bit
 
