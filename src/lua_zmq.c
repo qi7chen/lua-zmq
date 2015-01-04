@@ -16,13 +16,6 @@
 # define LUAZMQ_EXPORT  extern
 #endif
 
-#if defined(__GNUC__) && __GNUC__ >= 4
-# define LIKELY(x)   (__builtin_expect((x), 1))
-# define UNLIKELY(x) (__builtin_expect((x), 0))
-#else
-# define LIKELY(x)   (x)
-# define UNLIKELY(x) (x)
-#endif
 
 static void* global_context = NULL;
 
@@ -147,7 +140,7 @@ static int zsocket_send(lua_State* L)
         }
     }
     int rc = zmq_send(socket, data, len, flag);
-    if (UNLIKELY(rc < 0))
+    if (rc < 0)
     {
         return lzmq_throw_error(L);
     }
@@ -168,10 +161,10 @@ static int zsocket_recv(lua_State* L)
     zmq_msg_t msg;
     zmq_msg_init(&msg);
     int rc = zmq_recvmsg(socket, &msg, flag);
-    if (UNLIKELY(rc < 0))
+    if (rc < 0)
     {
         zmq_msg_close(&msg);
-        return lzmq_throw_error(L);
+        return 0;
     }
     size_t len = zmq_msg_size(&msg);
     void* data = zmq_msg_data(&msg);
