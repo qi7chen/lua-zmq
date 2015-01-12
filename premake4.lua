@@ -92,9 +92,7 @@ solution 'luazmq'
         kind 'SharedLib'
         location 'build'
         uuid 'C9A112FB-08C0-4503-9AFD-8EBAB5B3C204'
-        if os.get() == 'windows' then
         defines 'LUA_BUILD_AS_DLL'
-        end
         files
         {
             'deps/lua/src/*.h',
@@ -105,23 +103,17 @@ solution 'luazmq'
             'deps/lua/src/lua.c',
             'deps/lua/src/luac.c',
         }
-        if os.get() == 'linux' then
-        defines 'LUA_USE_LINUX'
-        links 'readline'
-        end
 
     project 'libsodium'
         language 'C'
         kind 'SharedLib'
         location 'build'
         uuid 'CB19F7EE-55D6-4C40-849D-64E2D3849041'
-        if os.get() == 'windows' then
         defines
         {
             'SODIUM_DLL_EXPORT',
             'inline=__inline',
         }
-        end
         files
         {
             'deps/libsodium/src/**.h',
@@ -138,13 +130,11 @@ solution 'luazmq'
         kind 'SharedLib'
         location 'build'
         uuid 'A75AF625-DDF0-4E60-97D8-A2FDC6229AF7'
-        if os.get() == 'windows' then
         defines
         {
             'DLL_EXPORT',
             'FD_SETSIZE=1024',
         }
-        end
         defines 'HAVE_LIBSODIUM'
         files
         {
