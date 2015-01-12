@@ -2,7 +2,6 @@
 -- Premake4 build script (http://industriousone.com/premake/download)
 --
 
-
 solution 'luazmq'
     configurations {'Debug', 'Release'}
     --flags {'ExtraWarnings'}
@@ -26,7 +25,6 @@ solution 'luazmq'
             '_SCL_SECURE_NO_WARNINGS',
             'NOMINMAX',
         }
-        links 'ws2_32'
 
     configuration 'gmake'
         buildoptions '-rdynamic'
@@ -46,9 +44,6 @@ solution 'luazmq'
         kind 'SharedLib'
         location 'build'
         uuid '86C52891-A665-47BF-9107-8EA58606C41A'
-        if os.get() == 'windows' then
-        defines 'inline=__inline'
-        end
         files
         {
             'src/*.c',
@@ -59,12 +54,20 @@ solution 'luazmq'
             'deps/libzmq/include',
         }
         libdirs 'bin'
-        links
+        links 'lua5.2'
+        if os.get() == 'linux' then
+        links 
         {
-            'lua5.2',
             'zmq',
             'sodium',
         }
+        else
+        links 
+        {
+            'libzmq',
+            'libsodium',
+        }            
+        end
 
     -- sudo apt-get install lua5.2 liblua5.2-dev
     if os.get() == 'linux' then return end
@@ -107,7 +110,7 @@ solution 'luazmq'
         links 'readline'
         end
 
-    project 'sodium'
+    project 'libsodium'
         language 'C'
         kind 'SharedLib'
         location 'build'
@@ -130,7 +133,7 @@ solution 'luazmq'
             'deps/libsodium/src/libsodium/include/sodium',
         }
 
-    project 'zmq'
+    project 'libzmq'
         language 'C++'
         kind 'SharedLib'
         location 'build'
@@ -155,5 +158,9 @@ solution 'luazmq'
             'deps/libzmq/include',
             'deps/libzmq/builds/msvc',
         }
-        links 'sodium'
+        links 
+        {
+            'ws2_32',
+            'libsodium'
+        }
         
