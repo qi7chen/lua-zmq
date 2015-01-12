@@ -35,4 +35,4 @@ zmq.shutdown()
 zmq.terminate()
 ~~~~~~~~~~
 
-See more [exampes](https://github.com/ichenq/lua-zmq/tree/master/test)
+See more [exampes](https://github.com/ichenq/lua-zmq/tree/master/test) and [API doc](https://github.com/ichenq/lua-zmq/blob/master/API.md)
