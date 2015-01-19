@@ -19,14 +19,17 @@
 #define LZMQ_SOCKET     "socket*"
 #define check_socket(L) (*(void**)luaL_checkudata(L, 1, LZMQ_SOCKET))
 
-#define LZMQ_CHECK_THROW(L, rc)  if (rc != 0)    \
-        return luaL_error(L, "zmq error %d: %s", rc, zmq_strerror(rc));
+#define LZMQ_CHECK_THROW(L, rc)     \
+        if (rc != 0) {              \
+            int err = zmq_errno();  \
+            return luaL_error(L, "zmq error %d: %s", err, zmq_strerror(err)); \
+        }
 
 static void* global_context = NULL;
 
 static int lzmq_create_socket(lua_State* L)
 {
-    int type = luaL_checkint(L, 1);
+    int type = (int)luaL_checkinteger(L, 1);
     void* socket = zmq_socket(global_context, type);
     if (socket == NULL)
     {
@@ -106,18 +109,10 @@ static int zsocket_send(lua_State* L)
     void* socket = check_socket(L);
     size_t len;
     const char* data = luaL_checklstring(L, 2, &len);
-    const char* option = lua_tostring(L, 3);
     int flag = 0;
-    if (option)
+    if (lua_gettop(L) > 2)
     {
-        if (strcmp(option, "more") == 0)
-        {
-            flag = ZMQ_SNDMORE;
-        }
-        else if (strcmp(option, "nowait") == 0)
-        {
-            flag = ZMQ_DONTWAIT;
-        }
+        flag = (int)luaL_checkinteger(L, 3);
     }
     int rc = zmq_send(socket, data, len, flag);
     if (rc > 0)
@@ -139,9 +134,9 @@ static int zsocket_recv(lua_State* L)
     void* socket = check_socket(L);
     const char* option = lua_tostring(L, 2);
     int flag = 0;
-    if (option && strcmp(option, "nowait") == 0)
+    if (lua_gettop(L) > 2)
     {
-        flag = ZMQ_DONTWAIT;
+        flag = (int)luaL_checkinteger(L, 3);
     }
     zmq_msg_t msg;
     zmq_msg_init(&msg);
@@ -168,7 +163,7 @@ static int zsocket_set_sendhwm(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_SNDHWM, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -178,7 +173,7 @@ static int zsocket_set_recvhwm(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_RCVHWM, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -188,7 +183,7 @@ static int zsocket_set_sendbuf(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_SNDBUF, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -198,7 +193,7 @@ static int zsocket_set_recvbuf(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_RCVBUF, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -208,7 +203,7 @@ static int zsocket_set_send_timeout(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_SNDTIMEO, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -218,7 +213,7 @@ static int zsocket_set_recv_timeout(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_RCVTIMEO, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -282,7 +277,7 @@ static int zsocket_set_linger(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_LINGER, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -303,7 +298,7 @@ static int zsocket_set_mandatory(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_ROUTER_MANDATORY, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -313,7 +308,7 @@ static int zsocket_set_probe_router(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_PROBE_ROUTER, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -323,7 +318,7 @@ static int zsocket_set_xpub_verbose(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_XPUB_VERBOSE, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -333,7 +328,7 @@ static int zsocket_set_req_relaxed(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_REQ_RELAXED, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -343,7 +338,7 @@ static int zsocket_set_req_correlate(lua_State* L)
 {
     void* socket = check_socket(L);
     assert(socket);
-    int value = luaL_checkint(L, 2);
+    int value = (int)luaL_checkinteger(L, 2);
     int rc = zmq_setsockopt(socket, ZMQ_REQ_CORRELATE, &value, sizeof(value));
     LZMQ_CHECK_THROW(L, rc);
     return 0;
@@ -441,8 +436,8 @@ static int lzmq_init(lua_State* L)
     {
         global_context = zmq_ctx_new();
     }
-    int io_threads = luaL_optint(L, 1, ZMQ_IO_THREADS_DFLT);
-    int max_sockets = luaL_optint(L, 1, ZMQ_MAX_SOCKETS_DFLT);
+    int io_threads = (int)luaL_optinteger(L, 1, ZMQ_IO_THREADS_DFLT);
+    int max_sockets = (int)luaL_optinteger(L, 1, ZMQ_MAX_SOCKETS_DFLT);
     int rc = zmq_ctx_set(global_context, ZMQ_IO_THREADS, io_threads);
     LZMQ_CHECK_THROW(L, rc);
     rc = zmq_ctx_set(global_context, ZMQ_MAX_SOCKETS, max_sockets);
@@ -549,7 +544,7 @@ static int lzmq_curve_keypair(lua_State* L)
 
 static int lzmq_sleep(lua_State* L)
 {
-    int sec = luaL_checkint(L, 1);
+    int sec = (int)luaL_checkinteger(L, 1);
     zmq_sleep(sec);
     return 0;
 }
@@ -574,6 +569,9 @@ static void push_socket_constant(lua_State* L)
     push_literal(L, "XPUB", ZMQ_XPUB);
     push_literal(L, "XSUB", ZMQ_XSUB);
     push_literal(L, "STREAM", ZMQ_STREAM);
+
+    push_literal(L, "DONTWAIT", ZMQ_DONTWAIT);
+    push_literal(L, "SNDMORE", ZMQ_SNDMORE);
 }
 
 static void create_metatable(lua_State* L)
