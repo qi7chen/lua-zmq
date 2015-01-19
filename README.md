@@ -1,6 +1,6 @@
 # lua-zmq
 
-lua-zmq is a simple(but not complete) Lua 5.2 binding of ZeroMQ 4.
+lua-zmq is a simple(but not complete) Lua 5.2/5.3 binding of ZeroMQ 4.
 
 ## Installation
 
