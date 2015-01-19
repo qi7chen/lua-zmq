@@ -56,6 +56,8 @@ zmq.PUSH
 zmq.XPUB
 zmq.XSUB
 zmq.STREAM
+zmq.DONTWAIT
+zmq.SNDMORE
 ~~~
 
 ## Socket API
@@ -87,14 +89,13 @@ See [zmq_disconnect](http://api.zeromq.org/4-0:zmq_disconnect)
 
 ### socket.send(data, flag)
 
-Send a message part on this socket, flag can be 'more' or 'nowait'.
-'more' means `ZMQ_SNDMORE`, 'nowait' means `ZMQ_DONTWAIT`.
+Send a message part on this socket, flag can be zmq.SNDMORE or zmq.DONTWAIT.
 See [zmq_send](http://api.zeromq.org/4-0:zmq-send)
 
 ### socket.recv(flag)
 
 Receive a message part from this socket, and return it.
-flag can be 'nowait' which means `ZMQ_DONTWAIT`
+flag can be zmq.DONTWAIT.
 See [zmq_recv](http://api.zeromq.org/4-0:zmq-recv)
 
 The following API are documented [here](http://api.zeromq.org/4-0:zmq-setsockopt)
