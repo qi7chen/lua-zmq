@@ -132,11 +132,10 @@ static int zsocket_send(lua_State* L)
 static int zsocket_recv(lua_State* L)
 {
     void* socket = check_socket(L);
-    const char* option = lua_tostring(L, 2);
     int flag = 0;
-    if (lua_gettop(L) > 2)
+    if (lua_gettop(L) >= 2)
     {
-        flag = (int)luaL_checkinteger(L, 3);
+        flag = (int)luaL_checkinteger(L, 2);
     }
     zmq_msg_t msg;
     zmq_msg_init(&msg);
@@ -151,11 +150,8 @@ static int zsocket_recv(lua_State* L)
     }
     else
     {
-        int err = zmq_errno();
         zmq_msg_close(&msg);
-        lua_pushnil(L);
-        lua_pushinteger(L, err);
-        return 2;
+        return 0;
     }
 }
 
@@ -551,7 +547,7 @@ static int lzmq_sleep(lua_State* L)
 
 #define push_literal(L, name, value)\
     lua_pushstring(L, name);        \
-    lua_pushnumber(L, value);       \
+    lua_pushinteger(L, value);      \
     lua_rawset(L, -3);
 
 static void push_socket_constant(lua_State* L)
