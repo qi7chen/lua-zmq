@@ -27,6 +27,7 @@ while true do
         local value = strunpack('<I4', data, 3)
         print(address, event, value)
     end
+    zmq.sleep(1)
 end
 
 zmq.shutdown()
