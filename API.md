@@ -100,6 +100,11 @@ See [zmq_recv](http://api.zeromq.org/4-0:zmq-recv)
 
 The following API are documented [here](http://api.zeromq.org/4-0:zmq-setsockopt)
 
+### socket.monitor(address, events)
+
+spawn a PAIR socket that publishes socket state changes (events) over the inproc:// transport to a given endpoint.
+See [zmq_socket_monitor](http://api.zeromq.org/4-0:zmq-socket-monitor)
+
 ### socket.set_sendhwm(msg_num)
 
 Set high water mark for outbound messages.
