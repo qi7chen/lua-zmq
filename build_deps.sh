@@ -1,19 +1,24 @@
-sudo apt-get install libreadline-dev lua5.2 liblua5.2-dev
+sudo apt-get install libreadline-dev
+
+# lua 5.3
+cd deps
+premake4 gmake
+make config=release64
+sudo cp ./bin/liblua5.3.0.so /usr/local/lib
+cd ..
 
 # libsodium
-mkdir libsodium && cd libsodium
-wget -c https://github.com/jedisct1/libsodium/archive/master.zip -O libsodium.zip
-unzip libsodium.zip
+wget -c http://download.libsodium.org/libsodium/releases/libsodium-1.0.1.tar.gz
+tar -xzvf libsodium-1.0.1.tar.gz
+cd libsodium-1.0.1
 sh ./autogen.sh && ./configure && make
 sudo make install
 cd ..
 
-# libzmq
-mkdir libzmq && cd libzmq
-wget -c https://github.com/zeromq/zeromq4-x/archive/master libzmq.zip
-unzip libsodium.zip
+# zeromq
+wget -c http://download.zeromq.org/zeromq-4.0.5.zip
+unzip zeromq-4.0.5.zip
+cd zeromq-4.0.5
 ./configure && make
 sudo make install
 cd ..
-
-
