@@ -3,11 +3,13 @@
 ### zmq.init(io_threads, max_sockets)
 
 Initialises global ZeroMQ context.
+
 See [zmq_ctx_new](http://api.zeromq.org/4-0:zmq-ctx-new) and [zmq_ctx_set](http://api.zeromq.org/4-0:zmq-ctx-set)
 
 ### zmq.shutdown()
 
 Shutdown global ZeroMQ context.
+
 See [zmq_ctx_shutdown](http://api.zeromq.org/4-0:zmq-ctx-shutdown)
 
 ### zmq.terminate()
@@ -18,26 +20,31 @@ See [zmq_ctx_term](http://api.zeromq.org/4-0:zmq-ctx-term)
 ### zmq.version(opt)
 
 Return a string with `major.minor.path`, if `opt` is 'n', return 3 numbers.
+
 See [zmq_version](http://api.zeromq.org/4-0:zmq_version)
 
 ### zmq.z85_encode(key)
 
 Encode a binary key as Z85 printable text and return it.
+
 See [zmq_z85_encode](http://api.zeromq.org/4-0:zmq-z85-encode)
 
 ### zmq.z85_decode(key)
 
 Decode a binary key from Z85 printable text and return it.
+
 See [zmq_z85_decode](http://api.zeromq.org/4-0:zmq-z85-decode)
 
 ### zmq.curve_keypair()
 
 Return a newly generated CURVE keypair.
+
 See [zmq_curve_keypair](http://api.zeromq.org/4-0:zmq-curve-keypair)
 
 ### zmq.socket(type)
 
 Return a newly created ZeroMQ socket.
+
 See [zmq_socket](http://api.zeromq.org/4-0:zmq-socket)
 
 `type` is enumerated in following constants:
@@ -65,37 +72,44 @@ zmq.SNDMORE
 ### socket.close()
 
 Close this ZeroMQ socket.
+
 See [zmq_close](http://api.zeromq.org/4-0:zmq_close)
 
 ### socket.bind(endpoint)
 
 Binds this socket to a local endpoint and then accepts incoming connections on that endpoint.
+
 See [zmq_bind](http://api.zeromq.org/4-0:zmq_bind)
 
 ### socket.unbind(endpoint)
 
 Unbind this socket from the endpoint specified by the endpoint argument.
+
 See [zmq_unbind](http://api.zeromq.org/4-0:zmq_unbind)
 
 ### socket.connect(endpoint)
 
 Connects this socket to an endpoint and then accepts incoming connections on that endpoint.
+
 See [zmq_connect](http://api.zeromq.org/4-0:zmq_connect)
 
 ### socket.disconnect()
 
 Disconnect this socket from the endpoint specified by the endpoint argument.
+
 See [zmq_disconnect](http://api.zeromq.org/4-0:zmq_disconnect)
 
 ### socket.send(data, flag)
 
 Send a message part on this socket, flag can be zmq.SNDMORE or zmq.DONTWAIT.
+
 See [zmq_send](http://api.zeromq.org/4-0:zmq-send)
 
 ### socket.recv(flag)
 
 Receive a message part from this socket, and return it.
 flag can be zmq.DONTWAIT.
+
 See [zmq_recv](http://api.zeromq.org/4-0:zmq-recv)
 
 The following API are documented [here](http://api.zeromq.org/4-0:zmq-setsockopt)
@@ -103,6 +117,7 @@ The following API are documented [here](http://api.zeromq.org/4-0:zmq-setsockopt
 ### socket.monitor(address, events)
 
 spawn a PAIR socket that publishes socket state changes (events) over the inproc:// transport to a given endpoint.
+
 See [zmq_socket_monitor](http://api.zeromq.org/4-0:zmq-socket-monitor)
 
 ### socket.set_sendhwm(msg_num)
