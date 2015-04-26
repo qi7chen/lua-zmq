@@ -1,5 +1,5 @@
 --
--- Premake4 build script (http://industriousone.com/premake/download)
+-- Premake script (http://premake.github.io)
 --
 
 solution 'luazmq'
@@ -67,5 +67,3 @@ solution 'luazmq'
             'libsodium',
         }            
         end
-
-    -- dependency lib can be found at https://github.com/ichenq/PreCompiledWinLib
