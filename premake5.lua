@@ -24,6 +24,9 @@ solution 'luazmq'
             '_CRT_SECURE_NO_WARNINGS',
             '_SCL_SECURE_NO_WARNINGS',
             'NOMINMAX',
+            'snprintf=_snprintf',
+            'inline=__inline',
+            'LUA_BUILD_AS_DLL',
         }
 
     configuration 'gmake'
@@ -39,11 +42,48 @@ solution 'luazmq'
             'dl',
         }
 
+    if os.get() == 'windows' then    
+	project 'lua'
+		language 'C'
+		kind 'ConsoleApp'
+		location 'build'
+		files
+		{
+			'deps/lua/src/lua.c',
+		}
+		includedirs
+		{
+			'deps/lua/src',
+		}
+		libdirs 'bin'
+		links 'lua5.3'
+		
+	project 'lua5.3'
+		language 'C'
+		kind 'SharedLib'
+		location 'build' 		
+		files
+		{
+			'deps/lua/src/*.h',
+			'deps/lua/src/*.c',
+		}
+		excludes
+		{
+			'deps/lua/src/lua.c',
+			'deps/lua/src/luac.c',
+		}
+		includedirs
+		{
+			'deps/lua/src',
+		}		
+	end        
+        
     project 'luazmq'
         language 'C'
         kind 'SharedLib'
         location 'build'
         uuid '86C52891-A665-47BF-9107-8EA58606C41A'
+        defines 'LUA_LIB'
         files
         {
             'src/*.c',
@@ -67,3 +107,4 @@ solution 'luazmq'
             'libsodium',
         }            
         end
+        
