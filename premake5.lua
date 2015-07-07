@@ -75,7 +75,11 @@ solution 'luazmq'
         location    'build'
         
         defines     'LUA_LIB'
-        includedirs 'deps/lua/src'
+        includedirs 
+        {
+            'deps/lua/src',
+            'deps/zmq/include'
+        }
         files       'src/*.c'
         links       'lua5.3'
         
@@ -83,5 +87,6 @@ solution 'luazmq'
             links  {'zmq', 'sodium'}
             
         filter 'system:windows'
-            links  {'libzmq', 'libsodium'}
+            libdirs 'deps/zmq/lib'
+            links  {'libzmq'}
         
