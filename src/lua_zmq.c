@@ -1,16 +1,17 @@
-// Copyright (C) 2014 ichenq@gmail.com. All rights reserved.
+// Copyright (C) 2014-2015 ichenq@outlook.com. All rights reserved.
 // Distributed under the terms and conditions of the Apache License.
 // See accompanying files LICENSE.
 
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 #include <zmq.h>
 #include <zmq_utils.h>
 #include <lua.h>
 #include <lauxlib.h>
 
 
-#define LZMQ_SOCKET     "socket*"
+#define LZMQ_SOCKET     "zsock*"
 #define check_socket(L) (*(void**)luaL_checkudata(L, 1, LZMQ_SOCKET))
 
 #define LZMQ_CHECK_THROW(L, rc)     \
@@ -121,7 +122,6 @@ static int zsocket_send(lua_State* L)
         return 2;
     }
 }
-
 
 static int zsocket_recv(lua_State* L)
 {
@@ -1103,7 +1103,7 @@ static int lzmq_sleep(lua_State* L)
 }
 
 #define push_literal(L, name, value)\
-    lua_pushstring(L, name);        \
+    lua_pushliteral(L, name);       \
     lua_pushinteger(L, value);      \
     lua_rawset(L, -3);
 
@@ -1162,109 +1162,100 @@ static void create_metatable(lua_State* L)
         { "recv", zsocket_recv },
         { "monitor", zsocket_monitor },
 
-        { "get_type", zsocket_get_type },
-        { "get_recv_more", zsocket_get_recv_more },
-        { "get_recv_hwm", zsocket_get_recv_hwm },
-        { "get_send_hwm", zsocket_get_send_hwm },
-        { "get_affinity", zsocket_get_affinity },
-        { "get_identity", zsocket_get_identity },
-        { "get_rate", zsocket_get_rate },
-        { "get_recovery_interval", zsocket_get_recovery_interval },
-        { "get_send_buf", zsocket_get_send_buf },
-        { "get_recv_buf", zsocket_get_recv_buf },
-        { "get_linger", zsocket_get_linger },
-        { "get_reconnect_interval", zsocket_get_reconnect_interval },
-        { "get_reconnect_interval_max", zsocket_get_reconnect_interval_max },
-        { "get_backlog", zsocket_get_backlog },
-        { "get_max_msg_size", zsocket_get_max_msg_size },
-        { "get_multicast_hops", zsocket_get_multicast_hops },
-        { "get_recv_timeout", zsocket_get_recv_timeout },
-        { "get_send_timeout", zsocket_get_send_timeout },
-        { "get_ipv6", zsocket_get_ipv6 },
-        { "get_immediate", zsocket_get_immediate },
-        { "get_fd", zsocket_get_fd },
-        { "get_events", zsocket_get_events },
-        { "get_last_endpoint", zsocket_get_last_endpoint },
-        { "get_tcp_keepalive", zsocket_get_tcp_keepalive },
-        { "get_tcp_keepalive_idle", zsocket_get_tcp_keepalive_idle },
-        { "get_tcp_keepalive_count", zsocket_get_tcp_keepalive_count },
-        { "get_tcp_keepalive_interval", zsocket_get_tcp_keepalive_interval },
-        { "get_mechanism", zsocket_get_mechanism },
-        { "get_plain_username", zsocket_get_plain_username },
-        { "get_plain_password", zsocket_get_plain_password },
-        { "get_curve_public_key", zsocket_get_curve_public_key },
-        { "get_curve_secret_key", zsocket_get_curve_secret_key },
-        { "get_curve_server_key", zsocket_get_curve_server_key },
-        { "get_zap_domain", zsocket_get_zap_domain },
+        { "getType", zsocket_get_type },
+        { "getRecvMore", zsocket_get_recv_more },
+        { "getRecvHWM", zsocket_get_recv_hwm },
+        { "getSendHWM", zsocket_get_send_hwm },
+        { "getAffinity", zsocket_get_affinity },
+        { "getIdentity", zsocket_get_identity },
+        { "getRate", zsocket_get_rate },
+        { "getRecoveryInterval", zsocket_get_recovery_interval },
+        { "getSendBuf", zsocket_get_send_buf },
+        { "getRecvBuf", zsocket_get_recv_buf },
+        { "getLinger", zsocket_get_linger },
+        { "getReconnectInterval", zsocket_get_reconnect_interval },
+        { "getReconnectIntervalMax", zsocket_get_reconnect_interval_max },
+        { "getBacklog", zsocket_get_backlog },
+        { "getMaxMsgSize", zsocket_get_max_msg_size },
+        { "getMulticastHops", zsocket_get_multicast_hops },
+        { "getRecvTimeout", zsocket_get_recv_timeout },
+        { "getSendTimeout", zsocket_get_send_timeout },
+        { "getIpv6", zsocket_get_ipv6 },
+        { "getImmediate", zsocket_get_immediate },
+        { "getFd", zsocket_get_fd },
+        { "getEvents", zsocket_get_events },
+        { "getLastEndpoint", zsocket_get_last_endpoint },
+        { "getTcpKeepalive", zsocket_get_tcp_keepalive },
+        { "getTcpKeepaliveIdle", zsocket_get_tcp_keepalive_idle },
+        { "getTcpKeepaliveCount", zsocket_get_tcp_keepalive_count },
+        { "getTcpKeepaliveInterval", zsocket_get_tcp_keepalive_interval },
+        { "getMechanism", zsocket_get_mechanism },
+        { "getPlainUsername", zsocket_get_plain_username },
+        { "getPlainPassword", zsocket_get_plain_password },
+        { "getCurvePublicKey", zsocket_get_curve_public_key },
+        { "getCurveSecretKey", zsocket_get_curve_secret_key },
+        { "getCurveServerKey", zsocket_get_curve_server_key },
+        { "getZapDomain", zsocket_get_zap_domain },
 
-        { "set_sendhwm", zsocket_set_sendhwm },
-        { "set_recvhwm", zsocket_set_recvhwm },
-        { "set_sendbuf", zsocket_set_sendbuf },
-        { "set_recvbuf", zsocket_set_recvbuf },
-        { "set_send_timeout", zsocket_set_send_timeout },
-        { "set_recv_timeout", zsocket_set_recv_timeout },
-        { "set_affinity", zsocket_set_affinity },
-        { "set_subscribe", zsocket_set_subscribe },
-        { "set_unsubscribe", zsocket_set_unsubscribe },
-        { "set_identity", zsocket_set_identity },
-        { "set_rate", zsocket_set_rate },
-        { "set_recovery_interval", zsocket_set_recovery_interval },
-        { "set_reconnect_interval", zsocket_set_reconnect_interval },
-        { "set_reconnect_interval_max", zsocket_set_reconnect_interval_max },
-        { "set_backlog", zsocket_set_backlog },
-        { "set_accept_filter", zsocket_set_accept_filter },
-        { "set_linger", zsocket_set_linger },
-        { "set_immediate", zsocket_set_immediate },
-        { "set_mandatory", zsocket_set_mandatory },
-        { "set_probe_router", zsocket_set_probe_router },
-        { "set_xpub_verbose", zsocket_set_xpub_verbose },
-        { "set_req_relaxed", zsocket_set_req_relaxed },
-        { "set_tcp_keepalive", zsocket_set_tcp_keepalive },
-        { "set_tcp_keepalive_idle", zsocket_set_tcp_keepalive_idle },
-        { "set_tcp_keepalive_count", zsocket_set_tcp_keepalive_count },
-        { "set_tcp_keepalive_interval", zsocket_set_tcp_keepalive_interval },
-        { "set_req_correlate", zsocket_set_req_correlate },
-        { "set_max_msg_size", zsocket_set_max_msg_size },
-        { "set_multicast_hops", zsocket_set_multicast_hops },
-        { "set_plain_server", zsocket_set_plain_server },
-        { "set_plain_username", zsocket_set_plain_username },
-        { "set_plain_password", zsocket_set_plain_password },
-        { "set_curve_server", zsocket_set_curve_server },
-        { "set_curve_secret_key", zsocket_set_curve_secret_key },
-        { "set_curve_public_key", zsocket_set_curve_public_key },
-        { "set_curve_server_key", zsocket_set_curve_server_key },
-        { "set_ipv6", zsocket_set_ipv6 },
-        { "set_ipv4only", zsocket_set_ipv4only },
-        { "set_conflate", zsocket_set_conflate },
+        { "setSendHWM", zsocket_set_sendhwm },
+        { "setRecvHWM", zsocket_set_recvhwm },
+        { "setSendbuf", zsocket_set_sendbuf },
+        { "setRecvbuf", zsocket_set_recvbuf },
+        { "setSendTimeout", zsocket_set_send_timeout },
+        { "setRecvTimeout", zsocket_set_recv_timeout },
+        { "setAffinity", zsocket_set_affinity },
+        { "setSubscribe", zsocket_set_subscribe },
+        { "setUnsubscribe", zsocket_set_unsubscribe },
+        { "setIdentity", zsocket_set_identity },
+        { "setRate", zsocket_set_rate },
+        { "setRecoveryInterval", zsocket_set_recovery_interval },
+        { "setReconnectInterval", zsocket_set_reconnect_interval },
+        { "setReconnectIntervalMax", zsocket_set_reconnect_interval_max },
+        { "setBacklog", zsocket_set_backlog },
+        { "setAcceptFilter", zsocket_set_accept_filter },
+        { "setLinger", zsocket_set_linger },
+        { "setImmediate", zsocket_set_immediate },
+        { "setMandatory", zsocket_set_mandatory },
+        { "setProbeRouter", zsocket_set_probe_router },
+        { "setXpubVerbose", zsocket_set_xpub_verbose },
+        { "setReqRelaxed", zsocket_set_req_relaxed },
+        { "setTcpKeepalive", zsocket_set_tcp_keepalive },
+        { "setTcpKeepaliveIdle", zsocket_set_tcp_keepalive_idle },
+        { "setTcpKeepaliveCount", zsocket_set_tcp_keepalive_count },
+        { "setTcpKeepaliveInterval", zsocket_set_tcp_keepalive_interval },
+        { "setReqCorrelate", zsocket_set_req_correlate },
+        { "setMaxMsgSize", zsocket_set_max_msg_size },
+        { "setMulticastHops", zsocket_set_multicast_hops },
+        { "setPlainServer", zsocket_set_plain_server },
+        { "setPlainUsername", zsocket_set_plain_username },
+        { "setPlainPassword", zsocket_set_plain_password },
+        { "setCurveServer", zsocket_set_curve_server },
+        { "setCurveSecretKey", zsocket_set_curve_secret_key },
+        { "setCurvePublicKey", zsocket_set_curve_public_key },
+        { "setCurveServerKey", zsocket_set_curve_server_key },
+        { "setIpv6", zsocket_set_ipv6 },
+        { "setIpv4only", zsocket_set_ipv4only },
+        { "setConflate", zsocket_set_conflate },
         { NULL, NULL },
     };
-    if (luaL_newmetatable(L, LZMQ_SOCKET))
-    {
-        lua_pushvalue(L, -1);
-        lua_setfield(L, -2, "__index");
-        luaL_setfuncs(L, methods, 0);
-        lua_pushliteral(L, "__metatable");
-        lua_pushliteral(L, "cannot access this metatable");
-        lua_settable(L, -3);
-        lua_pop(L, 1);  /* pop new metatable */
-    }
-    else
-    {
-        luaL_error(L, "`%s` already registered.", LZMQ_SOCKET);
-    }
+    luaL_newmetatable(L, LZMQ_SOCKET);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
+    luaL_setfuncs(L, methods, 0);
+    lua_pushliteral(L, "__metatable");
+    lua_pushliteral(L, "cannot access this metatable");
+    lua_settable(L, -3);
+    lua_pop(L, 1);  /* pop new metatable */
 }
 
-LUALIB_API int luaopen_luazmq(lua_State* L)
+LUALIB_API int luaopen_zmq(lua_State* L)
 {
     static const luaL_Reg lib[] =
     {
-        { "init", lzmq_init },
-        { "shutdown", lzmq_shutdown },
-        { "terminate", lzmq_terminate },
         { "version", lzmq_version },
-        { "z85_encode", lzmq_z85_encode },
-        { "z85_decode", lzmq_z85_decode },
-        { "curve_keypair", lzmq_curve_keypair },
+        { "z85Encode", lzmq_z85_encode },
+        { "z85Decode", lzmq_z85_decode },
+        { "curveKeypair", lzmq_curve_keypair },
         { "socket", lzmq_create_socket },
         { "sleep", lzmq_sleep },
         { NULL, NULL },
