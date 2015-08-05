@@ -13,7 +13,7 @@ zmq.init()
 print("Collecting updates from weather server...")
 local subscriber = zmq.socket(zmq.SUB)
 subscriber:connect(address)
-subscriber:set_subscribe('10001')
+subscriber:setSubscribe('10001')
 
 --  Process 100 updates
 local update_nbr = 0

@@ -12,10 +12,10 @@ local secret_key = [[4{DUIc#[BilXOmYjg[c#]uTD3J4>EoJVl===jx3M]]
 local address = 'tcp://*:10086'
 
 local s = zmq.socket(zmq.REP)
-s:set_curve_public_key(zmq.z85_decode(public_key))
-s:set_curve_secret_key(zmq.z85_decode(secret_key))
-s:set_curve_server(true)
-s:set_accept_filter('127.0.0.1')
+s:setCurvePublicKey(zmq.z85Eecode(public_key))
+s:setCurveSecretKey(zmq.z85Decode(secret_key))
+s:setCurveServer(true)
+s:setAcceptFilter('127.0.0.1')
 s:bind(address)
 print('server start at ' .. address)
 local num = 0
