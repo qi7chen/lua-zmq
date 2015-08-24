@@ -104,11 +104,7 @@ static int zsocket_send(lua_State* L)
     void* socket = check_socket(L);
     size_t len;
     const char* data = luaL_checklstring(L, 2, &len);
-    int flag = 0;
-    if (lua_gettop(L) > 2)
-    {
-        flag = (int)luaL_checkinteger(L, 3);
-    }
+    int flag = luaL_optint(L, 3, 0);
     int rc = zmq_send(socket, data, len, flag);
     if (rc > 0)
     {
@@ -126,11 +122,7 @@ static int zsocket_send(lua_State* L)
 static int zsocket_recv(lua_State* L)
 {
     void* socket = check_socket(L);
-    int flag = 0;
-    if (lua_gettop(L) >= 2)
-    {
-        flag = (int)luaL_checkinteger(L, 2);
-    }
+    int flag = luaL_optint(L, 2, 0);
     zmq_msg_t msg;
     zmq_msg_init(&msg);
     int rc = zmq_recvmsg(socket, &msg, flag);
