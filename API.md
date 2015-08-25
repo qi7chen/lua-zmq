@@ -23,19 +23,19 @@ Return a string with `major.minor.path`, if `opt` is 'n', return 3 numbers.
 
 See [zmq_version](http://api.zeromq.org/4-0:zmq_version)
 
-### zmq.z85_encode(key)
+### zmq.z85Encode(key)
 
 Encode a binary key as Z85 printable text and return it.
 
 See [zmq_z85_encode](http://api.zeromq.org/4-0:zmq-z85-encode)
 
-### zmq.z85_decode(key)
+### zmq.z85Eecode(key)
 
 Decode a binary key from Z85 printable text and return it.
 
 See [zmq_z85_decode](http://api.zeromq.org/4-0:zmq-z85-decode)
 
-### zmq.curve_keypair()
+### zmq.curveKeypair()
 
 Return a newly generated CURVE keypair.
 
@@ -120,106 +120,106 @@ spawn a PAIR socket that publishes socket state changes (events) over the inproc
 
 See [zmq_socket_monitor](http://api.zeromq.org/4-0:zmq-socket-monitor)
 
-### socket.set_sendhwm(msg_num)
+### socket.setSendhwm(msg_num)
 
 Set high water mark for outbound messages.
 
-### socket.set_recvhwm(msg_num)
+### socket.setRecvhwm(msg_num)
 
 Set high water mark for inbound messages.
 
-### socket.set_sendbuf(bytes)
+### socket.setSendbuf(bytes)
 
 Set kernel transmit buffer size.
 
-### socket.set_recvbuf(bytes)
+### socket.setRecvbuf(bytes)
 
 Set kernel receive buffer size.
 
-### socket.set_send_timeout(milliseconds)
+### socket.setSendTimeout(milliseconds)
 
 Maximum time before a send operation returns with EAGAIN.
 
-### socket.set_recv_timeout(milliseconds)
+### socket.setRecvTimeout(milliseconds)
 
 Maximum time before a recv operation returns with EAGAIN.
 
-### socket.set_affinity(affinity)
+### socket.setAffinity(affinity)
 
 Set the I/O thread affinity for newly created connections.
 
-### socket.set_subscribe(filter)
+### socket.setSubscribe(filter)
 
 Establish message filter. ZMQ_SUB only.
 
-### socket.set_unsubscribe(filter)
+### socket.setUnsubscribe(filter)
 
 Remove message filter. ZMQ_SUB only.
 
-### socket.set_identity(identity)
+### socket.setIdentity(identity)
 
 Set the identity of the specified socket when connecting to a ROUTER socket.
 Work with ZMQ_REQ, ZMQ_REP, ZMQ_ROUTER, ZMQ_DEALER.
 
-### socket.set_accept_filter(filter)
+### socket.setAcceptFilter(filter)
 
 Assign filters to allow new TCP connections. only sockets using TCP transport.
 
-### socket.set_linger(milliseconds)
+### socket.setLinger(milliseconds)
 
 Set linger period for socket shutdown.
  
-### socket.set_immediate(is_immediate)
+### socket.setImmediate(is_immediate)
 
 Queue messages only to completed connections.
 only sockets using connection-oriented transports.
 
-### socket.set_mandatory(is_mandatory)
+### socket.setMandatory(is_mandatory)
 
 Accept only routable messages on ROUTER sockets. ZMQ_ROUTER only.
 
-### socket.set_probe_router(is_probe)
+### socket.setProbeRouter(is_probe)
 
 Bootstrap connections to ROUTER sockets.
 work with ZMQ_ROUTER, ZMQ_DEALER, ZMQ_REQ.
 
-### socket.set_xpub_verbose(is_verbose)
+### socket.setXpubVerbose(is_verbose)
 
 Provide all subscription messages on XPUB sockets. ZMQ_XPUB only.
 
-### socket.set_req_relaxed(is_relaxed)
+### socket.setReqRelaxed(is_relaxed)
 
 Relax strict alternation between request and reply. ZMQ_REQ only.
 
-### socket.set_req_correlate(is_correlate)
+### socket.setReqCorrelate(is_correlate)
 
 Match replies with requests. ZMQ_REQ only.
 
-### socket.set_max_msg_size(bytes)
+### socket.setMaxMsgSize(bytes)
 
 Maximum acceptable inbound message size.
 
-### socket.set_curve_server(is_server)
+### socket.setCurveServer(is_server)
 
 Set CURVE server role. only sockets using TCP transport.
 
-### socket.set_curve_secret_key(key)
+### socket.setCurveSecretKey(key)
 
 Set CURVE secret key. only sockets using TCP transport.
 
-### socket.set_curve_public_key(key)
+### socket.setCurvePublicKey(key)
 
 Set CURVE public key. only sockets using TCP transport.
 
-### socket.set_curve_server_key(key)
+### socket.setCurveServerKey(key)
 
 Set CURVE server key. only sockets using TCP transport.
 
-### socket.set_ipv6(is_ipv6)
+### socket.setIpv6(is_ipv6)
 
 Enable IPv6 on socket.
 
-### socket.set_conflate(is_conflate)
+### socket.setConflate(is_conflate)
 
 Keep only last message.
 Work with ZMQ_PULL, ZMQ_PUSH, ZMQ_SUB, ZMQ_PUB, ZMQ_DEALER
