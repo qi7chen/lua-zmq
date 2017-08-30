@@ -8,11 +8,11 @@ solution 'luazmq'
 
     filter 'configurations:Debug'
         defines     'DEBUG'
-        flags       'Symbols'
+        symbols 	'On'
 
     filter 'configurations:Release'
         defines     'NDEBUG'
-        flags       'Symbols'
+		symbols 	'On'
         optimize    'On'
 
      filter 'action:vs*'
@@ -26,30 +26,12 @@ solution 'luazmq'
             'inline=__inline',
         }
 
-    filter 'action:gmake'
-        buildoptions    '-rdynamic'
-        defines         '__STDC_LIMIT_MACROS'
-  
     filter 'system:windows'
         defines 'LUA_BUILD_AS_DLL'
             
     filter 'system:linux'
         defines 'LUA_USE_LINUX'
             
-	project 'lua'
-        targetname  'lua'
-		language    'C'
-		kind        'ConsoleApp'
-		location    'build'
-        
-        includedirs 'deps/lua/src'
-		files       'deps/lua/src/lua.c'
-		libdirs     'bin'
-		links       'lua5.3'
-        
-        filter 'system:linux'
-            links   {'dl', 'readline'}
-		
 	project 'lua5.3'
         targetname  'lua5.3'
 		language    'C'
@@ -84,7 +66,7 @@ solution 'luazmq'
         links       'lua5.3'
         
         filter 'system:linux'
-            links  {'zmq', 'sodium'}
+            links  {'m', 'zmq', 'sodium'}
             
         filter 'system:windows'
             libdirs 'deps/zmq/lib'
