@@ -1,4 +1,4 @@
-// Copyright (C) 2014-2015 ichenq@outlook.com. All rights reserved.
+// Copyright (C) 2014-present prototyped.cn All rights reserved.
 // Distributed under the terms and conditions of the Apache License.
 // See accompanying files LICENSE.
 
