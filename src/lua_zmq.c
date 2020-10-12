@@ -7,9 +7,17 @@
 #include <string.h>
 #include <zmq.h>
 #include <zmq_utils.h>
+
+#ifndef LUA_COMPAT_APIINTCASTS
+#define LUA_COMPAT_APIINTCASTS
+#endif
+
 #include <lua.h>
 #include <lauxlib.h>
 
+#if defined(_MSC_VER) && _MSC_VER <= 1800
+# define snprintf _snprintf
+#endif
 
 #define LZMQ_SOCKET     "zsock*"
 #define check_socket(L) (*(void**)luaL_checkudata(L, 1, LZMQ_SOCKET))
