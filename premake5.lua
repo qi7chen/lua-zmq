@@ -22,7 +22,6 @@ solution 'luazmq'
             '_WIN32_WINNT=0x0600',
             '_CRT_SECURE_NO_WARNINGS',
             'NOMINMAX',
-            'snprintf=_snprintf',
             'inline=__inline',
         }
 
@@ -32,8 +31,8 @@ solution 'luazmq'
     filter 'system:linux'
         defines 'LUA_USE_LINUX'
 
-    project 'lua5.3'
-        targetname  'lua5.3'
+    project 'lua53'
+        targetname  'lua53'
         language    'C'
         kind        'SharedLib'
         location    'build'
@@ -63,7 +62,7 @@ solution 'luazmq'
             'deps/zmq/include'
         }
         files       'src/*.c'
-        links       'lua5.3'
+        links       'lua53'
 
         filter 'system:linux'
             links  {'m', 'zmq', 'sodium'}
