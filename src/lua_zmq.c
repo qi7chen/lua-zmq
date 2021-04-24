@@ -15,6 +15,10 @@
 #include <lua.h>
 #include <lauxlib.h>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
+
 #if defined(_MSC_VER) && _MSC_VER <= 1800
 # define snprintf _snprintf
 #endif

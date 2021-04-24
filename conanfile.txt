@@ -1,0 +1,6 @@
+[requires]
+lua/5.4.1
+zeromq/4.3.4
+
+[generators]
+cmake
