@@ -1,12 +1,12 @@
 # lua-zmq
 
-lua-zmq is a simple(not full-complete) Lua 5.3 binding of ZeroMQ 4.x, not production ready!
+lua-zmq is a simple(not full-complete) Lua binding of ZeroMQ 4.x, not production ready!
 
 ## Installation
 
-First obtain [CMake](https://cmake.org/download/).
+First obtain [CMake](https://cmake.org/download/) and [conan](https://conan.io/).
 
-Type `mkdir build && cd build && cmake ..`
+Type `make build` in a Linux or [WSL](https://docs.microsoft.com/en-us/windows/wsl/) shell
 
 
 ## Usage at a glance
