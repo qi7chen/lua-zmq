@@ -21,6 +21,9 @@
 
 #if defined(_MSC_VER) && _MSC_VER <= 1800
 # define snprintf _snprintf
+# define LIB_API __declspec(dllexport)
+#else
+# define LIB_API
 #endif
 
 #define LZMQ_SOCKET     "zsock*"
@@ -1252,7 +1255,7 @@ static void create_metatable(lua_State* L)
     lua_pop(L, 1);  /* pop new metatable */
 }
 
-LUALIB_API int luaopen_zmq(lua_State* L)
+LIB_API int luaopen_zmq(lua_State* L)
 {
     static const luaL_Reg lib[] =
     {

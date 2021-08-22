@@ -4,3 +4,12 @@ zeromq/4.3.4
 
 [generators]
 cmake
+
+[options]
+lua:shared=True
+zeromq:shared=True
+
+[imports]
+
+# Copies all dll files from packages bin folder to my "bin" folder
+bin, *.dll -> ./bin 
