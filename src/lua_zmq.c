@@ -19,12 +19,15 @@
 #include <winsock2.h>
 #endif
 
-#if defined(_MSC_VER) && _MSC_VER <= 1800
-# define snprintf _snprintf
+#if defined(_MSC_VER)
 # define LIB_API __declspec(dllexport)
+# if _MSC_VER <= 1800
+# define snprintf _snprintf
+# endif
 #else
 # define LIB_API
 #endif
+
 
 #define LZMQ_SOCKET     "zsock*"
 #define check_socket(L) (*(void**)luaL_checkudata(L, 1, LZMQ_SOCKET))
@@ -1255,7 +1258,7 @@ static void create_metatable(lua_State* L)
     lua_pop(L, 1);  /* pop new metatable */
 }
 
-LIB_API int luaopen_zmq(lua_State* L)
+LIB_API int luaopen_luazmq(lua_State* L)
 {
     static const luaL_Reg lib[] =
     {
